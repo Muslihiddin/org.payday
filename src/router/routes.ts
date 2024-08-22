@@ -50,6 +50,11 @@ export const routes = [
         path: '/employees/create',
         name: 'employees-create',
         component: () => import('@/views/employees/create')
+      },
+      {
+        path: '/payments',
+        name: 'payments',
+        component: () => import('@/views/payments/list')
       }
     ]
   }
