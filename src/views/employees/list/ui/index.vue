@@ -21,7 +21,7 @@ const { data, isLoading } = useQuery({
 
 <template>
   <div>
-    <header class="flex items-center justify-between">
+    <header class="flex items-center justify-between mb-6">
       <h2
         class="mt-10 scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
       >
@@ -32,7 +32,7 @@ const { data, isLoading } = useQuery({
         <PlusIcon class="w-4 h-4 ml-1" />
       </Button>
     </header>
-    <div class="mt-6 w-full">
+    <div class="w-full">
       <DataTable :columns="columns" :data="data" :loading="isLoading" />
     </div>
   </div>

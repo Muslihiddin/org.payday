@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import type { CreateEmployeeModel } from '../types'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useMutation } from '@tanstack/vue-query'
+import { createEmployee } from '../api'
 
-import { h, ref } from 'vue'
+import type { CreateEmployeeModel } from '../types'
 
 import * as z from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -34,6 +37,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from 'vue-sonner'
+import { Textarea } from '@/components/ui/textarea'
 
 const formSchema = [
   z.object({
@@ -42,10 +46,19 @@ const formSchema = [
       .length(19, { message: 'Please enter valid phone number' })
       .default('+998'),
     inn: z.string().length(7, 'Please enter valid INN'),
-    passportSerialNumber: z.string(),
-    pinfl: z.string(),
-    accountCredit: z.string(),
+    passportSerialNumber: z
+      .string()
+      .length(9, 'Value must start with two alphabetical characters and end with 7 digits'),
+    pinfl: z.string().length(18, 'Invalid PINFL'),
+    accountCredit: z.string().length(23, 'Account credit number is invalid'),
     mfo: z.string()
+  }),
+  z.object({
+    cardNumber: z.string().length(19, 'Invalid card number'),
+    status: z.string(),
+    salary: z.number(),
+    percentAllowed: z.number().min(0, "Can't be lowe than 0").max(100, "Can't be higher than 100"),
+    comment: z.string()
   })
 ]
 
@@ -54,34 +67,89 @@ const steps = [
   {
     step: 1,
     title: 'Employees identifiers',
-    description: 'Fill all given fields'
+    description: 'Name, passport details, pinfl etc.'
   },
   {
     step: 2,
-    title: 'Your password',
-    description: 'Choose a password'
-  },
-  {
-    step: 3,
-    title: 'Your Favorite Drink',
-    description: 'Choose a drink'
+    title: 'Employees details',
+    description: 'Card number, salary, status and so on'
   }
 ]
 
-function onSubmit(values: any) {
-  toast({
-    title: 'You submitted the following values:',
-    description: h(
-      'pre',
-      { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' },
-      h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))
-    )
-  })
+type FormValues = {
+  phoneNumber: string
+  inn: string
+  passportSerialNumber: string
+  pinfl: string
+  accountCredit: string
+  mfo: string
+  cardNumber: string
+  status: 'active' | 'blocked' | 'leftTheCompany'
+  salary: number
+  percentAllowed: number
+  comment: string
+}
+
+const prepareValuesToSend = (values: FormValues): CreateEmployeeModel => {
+  return {
+    percentAllowed: values.percentAllowed,
+    salary: values.salary,
+    status: values.status,
+    comment: values.comment,
+    cardNumber: values.cardNumber.replace(/\s+/g, ''),
+    identifiers: [
+      {
+        type: 'accountCredit',
+        value: values.accountCredit.replace(/\s+/g, '')
+      },
+      {
+        type: 'inn',
+        value: values.inn
+      },
+      {
+        type: 'mfo',
+        value: values.mfo
+      },
+      {
+        type: 'passportSerialNumber',
+        value: values.passportSerialNumber
+      },
+      {
+        type: 'phoneNumber',
+        value: values.phoneNumber.replace(/\D+/g, '')
+      },
+      {
+        type: 'pinfl',
+        value: values.pinfl.replace(/\s+/g, '')
+      }
+    ]
+  }
+}
+
+const router = useRouter()
+const { isPending, mutate } = useMutation({
+  mutationFn: createEmployee,
+  onSuccess: () => {
+    toast.success('New employee was added!')
+    router.push({ name: 'employees-list' })
+  }
+})
+const onSubmit = async (values: FormValues) => {
+  const payload = prepareValuesToSend(values)
+  mutate(payload)
 }
 </script>
 
 <template>
   <div>
+    <header class="flex items-center justify-between mb-6">
+      <h2
+        class="mt-10 scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
+      >
+        Adding new employee
+      </h2>
+    </header>
+
     <Form
       v-slot="{ meta, values, validate }"
       as=""
@@ -100,7 +168,7 @@ function onSubmit(values: any) {
               validate()
 
               if (stepIndex === steps.length && meta.valid) {
-                onSubmit(values)
+                onSubmit(values as FormValues)
               }
             }
           "
@@ -177,7 +245,7 @@ function onSubmit(values: any) {
                 <FormItem>
                   <FormLabel>Passport Serial Number</FormLabel>
                   <FormControl>
-                    <Input type="text" v-bind="componentField" />
+                    <Input type="text" v-bind="componentField" maska="@@#######" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -187,7 +255,7 @@ function onSubmit(values: any) {
                 <FormItem>
                   <FormLabel>PINFL</FormLabel>
                   <FormControl>
-                    <Input type="text" v-bind="componentField" />
+                    <Input type="text" v-bind="componentField" maska="# ###### ### ### #" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -197,7 +265,7 @@ function onSubmit(values: any) {
                 <FormItem>
                   <FormLabel>Account Credit</FormLabel>
                   <FormControl>
-                    <Input type="text" v-bind="componentField" />
+                    <Input type="text" v-bind="componentField" maska="##### ##### ##### #####" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -215,46 +283,63 @@ function onSubmit(values: any) {
             </template>
 
             <template v-if="stepIndex === 2">
-              <FormField v-slot="{ componentField }" name="password">
+              <FormField v-slot="{ componentField }" name="cardNumber">
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Card number</FormLabel>
                   <FormControl>
-                    <Input type="password" v-bind="componentField" />
+                    <Input type="text" v-bind="componentField" maska="#### #### #### ####" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               </FormField>
 
-              <FormField v-slot="{ componentField }" name="confirmPassword">
+              <FormField v-slot="{ componentField }" name="status">
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" v-bind="componentField" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-            </template>
-
-            <template v-if="stepIndex === 3">
-              <FormField v-slot="{ componentField }" name="favoriteDrink">
-                <FormItem>
-                  <FormLabel>Drink</FormLabel>
-
+                  <FormLabel>Status</FormLabel>
                   <Select v-bind="componentField">
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a drink" />
+                        <SelectValue placeholder="Select a status of employee" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="coffee"> Coffee </SelectItem>
-                        <SelectItem value="tea"> Tea </SelectItem>
-                        <SelectItem value="soda"> Soda </SelectItem>
+                        <SelectItem value="active"> Active </SelectItem>
+                        <SelectItem value="blocked"> Blocked </SelectItem>
+                        <SelectItem value="leftTheCompany"> Left the company </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField }" name="salary">
+                <FormItem>
+                  <FormLabel>Salary</FormLabel>
+                  <FormControl>
+                    <Input type="number" v-bind="componentField" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField }" name="percentAllowed">
+                <FormItem>
+                  <FormLabel>Percent allowed</FormLabel>
+                  <FormControl>
+                    <Input type="number" v-bind="componentField" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField }" name="comment">
+                <FormItem>
+                  <FormLabel>Comment</FormLabel>
+                  <FormControl>
+                    <Textarea v-bind="componentField" />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               </FormField>
@@ -267,7 +352,7 @@ function onSubmit(values: any) {
             </Button>
             <div class="flex items-center gap-3">
               <Button
-                v-if="stepIndex !== 3"
+                v-if="stepIndex !== 2"
                 :type="meta.valid ? 'button' : 'submit'"
                 :disabled="isNextDisabled"
                 size="sm"
@@ -275,7 +360,9 @@ function onSubmit(values: any) {
               >
                 Next
               </Button>
-              <Button v-if="stepIndex === 3" size="sm" type="submit"> Submit </Button>
+              <Button v-if="stepIndex === 2" size="sm" type="submit" :loading="isPending">
+                Submit
+              </Button>
             </div>
           </div>
         </form>
