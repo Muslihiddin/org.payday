@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { Header } from '@/components/header'
 import { Sidebar } from '@/components/sidebar'
-import { DashboardIcon, PersonIcon } from '@radix-icons/vue'
+import { DashboardIcon, PersonIcon, RowsIcon } from '@radix-icons/vue'
 
 import type { LinkProp } from '@/components/sidebar/Sidebar.vue'
 
@@ -16,6 +16,11 @@ const links: LinkProp[] = [
     name: 'Employees',
     location: 'employees-list',
     icon: PersonIcon
+  },
+  {
+    name: 'Payments',
+    location: 'payments',
+    icon: RowsIcon
   }
 ]
 
