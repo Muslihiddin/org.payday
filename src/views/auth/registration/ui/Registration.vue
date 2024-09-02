@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 
-import { Button } from '@/components/ui/button'
-import CreateFrom from './modules/CreateFrom.vue'
+import { Button } from "@/components/ui/button";
+import RegisterForm from "../modules/RegisterForm.vue";
 
-const router = useRouter()
+const router = useRouter();
 </script>
 
 <template>
   <div class="flex min-h-screen">
     <div class="w-full hidden lg:flex items-center justify-center">
-      <h1 class="text-foreground scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+      <h1
+        class="text-foreground scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl"
+      >
         The motto section.
       </h1>
     </div>
@@ -29,7 +31,7 @@ const router = useRouter()
           </div>
 
           <div class="mt-4">
-            <CreateFrom />
+            <RegisterForm />
           </div>
 
           <div class="mt-4 flex items-center gap-x-1">

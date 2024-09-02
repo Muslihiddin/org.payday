@@ -1,94 +1,100 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useMutation } from '@tanstack/vue-query'
-import { createEmployee } from '../api'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useMutation } from "@tanstack/vue-query";
+import { createEmployee } from "../api";
 
-import type { CreateEmployeeModel } from '../types'
+import type { CreateEmployeeModel } from "../types";
 
-import * as z from 'zod'
-import { toTypedSchema } from '@vee-validate/zod'
+import * as z from "zod";
+import { toTypedSchema } from "@vee-validate/zod";
 
-import { CheckIcon, CircleIcon, DotIcon } from '@radix-icons/vue'
+import { CheckIcon, CircleIcon, DotIcon } from "@radix-icons/vue";
 import {
   Stepper,
   StepperDescription,
   StepperItem,
   StepperSeparator,
   StepperTitle,
-  StepperTrigger
-} from '@/components/ui/stepper'
+  StepperTrigger,
+} from "@/components/ui/stepper";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from '@/components/ui/form'
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { toast } from 'vue-sonner'
-import { Textarea } from '@/components/ui/textarea'
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "vue-sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = [
   z.object({
     phoneNumber: z
       .string()
-      .length(19, { message: 'Please enter valid phone number' })
-      .default('+998'),
-    inn: z.string().length(7, 'Please enter valid INN'),
+      .length(19, { message: "Please enter valid phone number" })
+      .default("+998"),
+    inn: z.string().length(7, "Please enter valid INN"),
     passportSerialNumber: z
       .string()
-      .length(9, 'Value must start with two alphabetical characters and end with 7 digits'),
-    pinfl: z.string().length(18, 'Invalid PINFL'),
-    accountCredit: z.string().length(23, 'Account credit number is invalid'),
-    mfo: z.string()
+      .length(
+        9,
+        "Value must start with two alphabetical characters and end with 7 digits"
+      ),
+    pinfl: z.string().length(18, "Invalid PINFL"),
+    accountCredit: z.string().length(23, "Account credit number is invalid"),
+    mfo: z.string(),
   }),
   z.object({
-    cardNumber: z.string().length(19, 'Invalid card number'),
+    cardNumber: z.string().length(19, "Invalid card number"),
     status: z.string(),
     salary: z.number(),
-    percentAllowed: z.number().min(0, "Can't be lowe than 0").max(100, "Can't be higher than 100"),
-    comment: z.string()
-  })
-]
+    percentAllowed: z
+      .number()
+      .min(0, "Can't be lowe than 0")
+      .max(100, "Can't be higher than 100"),
+    comment: z.string(),
+  }),
+];
 
-const stepIndex = ref(1)
+const stepIndex = ref(1);
 const steps = [
   {
     step: 1,
-    title: 'Employees identifiers',
-    description: 'Name, passport details, pinfl etc.'
+    title: "Employees identifiers",
+    description: "Name, passport details, pinfl etc.",
   },
   {
     step: 2,
-    title: 'Employees details',
-    description: 'Card number, salary, status and so on'
-  }
-]
+    title: "Employees details",
+    description: "Card number, salary, status and so on",
+  },
+];
 
 type FormValues = {
-  phoneNumber: string
-  inn: string
-  passportSerialNumber: string
-  pinfl: string
-  accountCredit: string
-  mfo: string
-  cardNumber: string
-  status: 'active' | 'blocked' | 'leftTheCompany'
-  salary: number
-  percentAllowed: number
-  comment: string
-}
+  phoneNumber: string;
+  inn: string;
+  passportSerialNumber: string;
+  pinfl: string;
+  accountCredit: string;
+  mfo: string;
+  cardNumber: string;
+  status: "active" | "blocked" | "leftTheCompany";
+  salary: number;
+  percentAllowed: number;
+  comment: string;
+};
 
 const prepareValuesToSend = (values: FormValues): CreateEmployeeModel => {
   return {
@@ -96,48 +102,48 @@ const prepareValuesToSend = (values: FormValues): CreateEmployeeModel => {
     salary: values.salary,
     status: values.status,
     comment: values.comment,
-    cardNumber: values.cardNumber.replace(/\s+/g, ''),
+    cardNumber: values.cardNumber.replace(/\s+/g, ""),
     identifiers: [
       {
-        type: 'accountCredit',
-        value: values.accountCredit.replace(/\s+/g, '')
+        type: "accountCredit",
+        value: values.accountCredit.replace(/\s+/g, ""),
       },
       {
-        type: 'inn',
-        value: values.inn
+        type: "inn",
+        value: values.inn,
       },
       {
-        type: 'mfo',
-        value: values.mfo
+        type: "mfo",
+        value: values.mfo,
       },
       {
-        type: 'passportSerialNumber',
-        value: values.passportSerialNumber
+        type: "passportSerialNumber",
+        value: values.passportSerialNumber,
       },
       {
-        type: 'phoneNumber',
-        value: values.phoneNumber.replace(/\D+/g, '')
+        type: "phoneNumber",
+        value: values.phoneNumber.replace(/\D+/g, ""),
       },
       {
-        type: 'pinfl',
-        value: values.pinfl.replace(/\s+/g, '')
-      }
-    ]
-  }
-}
+        type: "pinfl",
+        value: values.pinfl.replace(/\s+/g, ""),
+      },
+    ],
+  };
+};
 
-const router = useRouter()
+const router = useRouter();
 const { isPending, mutate } = useMutation({
   mutationFn: createEmployee,
   onSuccess: () => {
-    toast.success('New employee was added!')
-    router.push({ name: 'employees-list' })
-  }
-})
+    toast.success("New employee was added!");
+    router.push({ name: "employees-list" });
+  },
+});
 const onSubmit = async (values: FormValues) => {
-  const payload = prepareValuesToSend(values)
-  mutate(payload)
-}
+  const payload = prepareValuesToSend(values);
+  mutate(payload);
+};
 </script>
 
 <template>
@@ -188,11 +194,16 @@ const onSubmit = async (values: FormValues) => {
 
               <StepperTrigger as-child>
                 <Button
-                  :variant="state === 'completed' || state === 'active' ? 'default' : 'outline'"
+                  :variant="
+                    state === 'completed' || state === 'active'
+                      ? 'default'
+                      : 'outline'
+                  "
                   size="icon"
                   class="z-10 rounded-full shrink-0"
                   :class="[
-                    state === 'active' && 'ring-2 ring-ring ring-offset-2 ring-offset-background'
+                    state === 'active' &&
+                      'ring-2 ring-ring ring-offset-2 ring-offset-background',
                   ]"
                   :disabled="state !== 'completed' && !meta.valid"
                 >
@@ -225,7 +236,11 @@ const onSubmit = async (values: FormValues) => {
                 <FormItem>
                   <FormLabel>Phone number</FormLabel>
                   <FormControl>
-                    <Input type="text" v-bind="componentField" maska="+998 (##) ###-##-##" />
+                    <Input
+                      type="text"
+                      v-bind="componentField"
+                      maska="+998 (##) ###-##-##"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -235,17 +250,28 @@ const onSubmit = async (values: FormValues) => {
                 <FormItem>
                   <FormLabel>INN</FormLabel>
                   <FormControl>
-                    <Input type="text" v-bind="componentField" maska="#######" />
+                    <Input
+                      type="text"
+                      v-bind="componentField"
+                      maska="#######"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               </FormField>
 
-              <FormField v-slot="{ componentField }" name="passportSerialNumber">
+              <FormField
+                v-slot="{ componentField }"
+                name="passportSerialNumber"
+              >
                 <FormItem>
                   <FormLabel>Passport Serial Number</FormLabel>
                   <FormControl>
-                    <Input type="text" v-bind="componentField" maska="@@#######" />
+                    <Input
+                      type="text"
+                      v-bind="componentField"
+                      maska="@@#######"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -255,7 +281,11 @@ const onSubmit = async (values: FormValues) => {
                 <FormItem>
                   <FormLabel>PINFL</FormLabel>
                   <FormControl>
-                    <Input type="text" v-bind="componentField" maska="# ###### ### ### #" />
+                    <Input
+                      type="text"
+                      v-bind="componentField"
+                      maska="# ###### ### ### #"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -265,7 +295,11 @@ const onSubmit = async (values: FormValues) => {
                 <FormItem>
                   <FormLabel>Account Credit</FormLabel>
                   <FormControl>
-                    <Input type="text" v-bind="componentField" maska="##### ##### ##### #####" />
+                    <Input
+                      type="text"
+                      v-bind="componentField"
+                      maska="##### ##### ##### #####"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -287,7 +321,11 @@ const onSubmit = async (values: FormValues) => {
                 <FormItem>
                   <FormLabel>Card number</FormLabel>
                   <FormControl>
-                    <Input type="text" v-bind="componentField" maska="#### #### #### ####" />
+                    <Input
+                      type="text"
+                      v-bind="componentField"
+                      maska="#### #### #### ####"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -299,14 +337,18 @@ const onSubmit = async (values: FormValues) => {
                   <Select v-bind="componentField">
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a status of employee" />
+                        <SelectValue
+                          placeholder="Select a status of employee"
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value="active"> Active </SelectItem>
                         <SelectItem value="blocked"> Blocked </SelectItem>
-                        <SelectItem value="leftTheCompany"> Left the company </SelectItem>
+                        <SelectItem value="leftTheCompany">
+                          Left the company
+                        </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -347,7 +389,12 @@ const onSubmit = async (values: FormValues) => {
           </div>
 
           <div class="flex items-center justify-between mt-4">
-            <Button :disabled="isPrevDisabled" variant="outline" size="sm" @click="prevStep()">
+            <Button
+              :disabled="isPrevDisabled"
+              variant="outline"
+              size="sm"
+              @click="prevStep()"
+            >
               Back
             </Button>
             <div class="flex items-center gap-3">
@@ -360,7 +407,12 @@ const onSubmit = async (values: FormValues) => {
               >
                 Next
               </Button>
-              <Button v-if="stepIndex === 2" size="sm" type="submit" :loading="isPending">
+              <Button
+                v-if="stepIndex === 2"
+                size="sm"
+                type="submit"
+                :loading="isPending"
+              >
                 Submit
               </Button>
             </div>

@@ -1,60 +1,63 @@
 <script setup lang="ts" generic="TData, TValue">
-import type { ColumnDef } from '@tanstack/vue-table'
+import type { ColumnDef } from "@tanstack/vue-table";
 
 import {
   FlexRender,
   getCoreRowModel,
   useVueTable,
-  getPaginationRowModel
-} from '@tanstack/vue-table'
+  getPaginationRowModel,
+} from "@tanstack/vue-table";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
-} from '@/components/ui/table'
+  TableRow,
+} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 import {
   ChevronRightIcon,
   ChevronLeftIcon,
   DoubleArrowRightIcon,
-  DoubleArrowLeftIcon
-} from '@radix-icons/vue'
+  DoubleArrowLeftIcon,
+} from "@radix-icons/vue";
 
 const props = defineProps<{
-  columns: ColumnDef<TData, TValue>[]
-  data?: TData[]
-  loading: boolean
-}>()
+  columns: ColumnDef<TData, TValue>[];
+  data?: TData[];
+  loading: boolean;
+}>();
 
 const table = useVueTable({
   get data() {
-    return props.data ?? []
+    return props.data ?? [];
   },
   get columns() {
-    return props.columns
+    return props.columns;
   },
   getCoreRowModel: getCoreRowModel(),
   getPaginationRowModel: getPaginationRowModel(),
-  manualPagination: true
-})
+  manualPagination: true,
+});
 </script>
 
 <template>
   <div class="border rounded overflow-x-auto">
     <Table class="w-full">
       <TableHeader>
-        <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+        <TableRow
+          v-for="headerGroup in table.getHeaderGroups()"
+          :key="headerGroup.id"
+        >
           <TableHead v-for="header in headerGroup.headers" :key="header.id">
             <FlexRender
               v-if="!header.isPlaceholder"
@@ -67,7 +70,9 @@ const table = useVueTable({
       <TableBody>
         <template v-if="loading">
           <TableRow>
-            <TableCell :colspan="columns.length" class="h-24 text-center"> Loading... </TableCell>
+            <TableCell :colspan="columns.length" class="h-24 text-center">
+              Loading...
+            </TableCell>
           </TableRow>
         </template>
         <template v-else-if="table.getRowModel().rows.length">
@@ -77,13 +82,18 @@ const table = useVueTable({
             :data-state="row.getIsSelected() ? 'selected' : undefined"
           >
             <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-              <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+              <FlexRender
+                :render="cell.column.columnDef.cell"
+                :props="cell.getContext()"
+              />
             </TableCell>
           </TableRow>
         </template>
         <template v-else>
           <TableRow>
-            <TableCell :colspan="columns.length" class="h-24 text-center"> No results. </TableCell>
+            <TableCell :colspan="columns.length" class="h-24 text-center">
+              No results.
+            </TableCell>
           </TableRow>
         </template>
       </TableBody>
@@ -98,7 +108,9 @@ const table = useVueTable({
         @update:model-value="String(table.setPageSize)"
       >
         <SelectTrigger class="h-8 w-[70px]">
-          <SelectValue :placeholder="`${table.getState().pagination.pageSize}`" />
+          <SelectValue
+            :placeholder="`${table.getState().pagination.pageSize}`"
+          />
         </SelectTrigger>
         <SelectContent side="top">
           <SelectItem
@@ -113,7 +125,9 @@ const table = useVueTable({
     </div>
 
     <div class="flex items-center justify-end space-x-2">
-      <div class="flex w-[100px] items-center justify-center text-sm font-medium">
+      <div
+        class="flex w-[100px] items-center justify-center text-sm font-medium"
+      >
         Page {{ table.getState().pagination.pageIndex + 1 }} of
         {{ table.getPageCount() }}
       </div>

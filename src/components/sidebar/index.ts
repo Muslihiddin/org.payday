@@ -1,1 +1,12 @@
-export { default as Sidebar } from './Sidebar.vue'
+export { default as Sidebar } from "./ui/Sidebar.vue";
+
+import type { Component } from "vue";
+export interface LinkProp {
+  name: string;
+  location: string;
+  icon: Component;
+}
+export interface NavProps {
+  links: LinkProp[];
+  isCollapsed: boolean;
+}

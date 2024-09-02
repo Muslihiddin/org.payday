@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 
-import { Button } from '@/components/ui/button'
-import LoginForm from './modules/LoginForm.vue'
+import { Button } from "@/components/ui/button";
+import LoginForm from "../modules/LoginForm.vue";
 
-const router = useRouter()
+const router = useRouter();
 </script>
 
 <template>
   <div class="flex min-h-screen">
     <div class="w-full hidden lg:flex items-center justify-center">
-      <h1 class="text-foreground scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+      <h1
+        class="text-foreground scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl"
+      >
         The motto section.
       </h1>
     </div>
@@ -41,7 +43,7 @@ const router = useRouter()
           <Button
             variant="outline"
             class="w-full mt-4"
-            @click="() => router.push({ name: 'register' })"
+            @click="() => router.push({ name: 'registration' })"
             >Create an account</Button
           >
         </div>

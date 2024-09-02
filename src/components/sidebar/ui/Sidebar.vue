@@ -1,31 +1,26 @@
 <script setup lang="ts">
-import { cn } from '@/lib/utils'
-import { useRoute } from 'vue-router'
-import { ChevronLeftIcon } from '@radix-icons/vue'
+import { cn } from "@/lib/utils";
+import { useRoute } from "vue-router";
+import { ChevronLeftIcon } from "@radix-icons/vue";
 
-import { buttonVariants, Button } from '@/components/ui/button'
-import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { buttonVariants, Button } from "@/components/ui/button";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-import type { Component } from 'vue'
+import type { NavProps } from "..";
 
-export interface LinkProp {
-  name: string
-  location: string
-  icon: Component
-}
+defineProps<NavProps>();
+const emit = defineEmits(["on-toggle-sidebar"]);
+const toggleSidebar = () => emit("on-toggle-sidebar");
 
-interface NavProps {
-  links: LinkProp[]
-  isCollapsed: boolean
-}
-defineProps<NavProps>()
-const emit = defineEmits(['on-toggle-sidebar'])
-const toggleSidebar = () => emit('on-toggle-sidebar')
-
-const route = useRoute()
+const route = useRoute();
 const isActive = (location: string) => {
-  return route.name === location
-}
+  return route.name === location;
+};
 </script>
 
 <template>
@@ -41,18 +36,22 @@ const isActive = (location: string) => {
     </div>
 
     <TooltipProvider>
-      <nav class="flex flex-col h-full gap-y-1 duration-200 transition-all flex-1">
+      <nav
+        class="flex flex-col h-full gap-y-1 duration-200 transition-all flex-1"
+      >
         <template v-for="nav in links" :key="nav.name">
           <Tooltip v-if="isCollapsed" :delay-duration="0">
             <TooltipTrigger as-child>
               <RouterLink
                 :to="{ name: nav.location }"
                 :class="{
-                  [cn(buttonVariants({ variant: 'ghost', size: 'icon' }))]: !isActive(nav.location),
-                  [cn(buttonVariants({ variant: 'default', size: 'icon' }))]: isActive(nav.location)
+                  [cn(buttonVariants({ variant: 'ghost', size: 'icon' }))]:
+                    !isActive(nav.location),
+                  [cn(buttonVariants({ variant: 'default', size: 'icon' }))]:
+                    isActive(nav.location),
                 }"
               >
-                <component :is="nav.icon" class="size-5" />
+                <component :is="nav.icon" :size="22" />
                 <span class="sr-only">{{ nav.name }}</span>
               </RouterLink>
             </TooltipTrigger>
@@ -66,12 +65,14 @@ const isActive = (location: string) => {
             :to="{ name: nav.location }"
             class="gap-x-3 min-w-48"
             :class="{
-              [cn(buttonVariants({ variant: 'ghost' }), 'justify-start')]: !isActive(nav.location),
-              [cn(buttonVariants({ variant: 'default' }), 'justify-start')]: isActive(nav.location)
+              [cn(buttonVariants({ variant: 'ghost' }), 'justify-start')]:
+                !isActive(nav.location),
+              [cn(buttonVariants({ variant: 'default' }), 'justify-start')]:
+                isActive(nav.location),
             }"
           >
-            <component :is="nav.icon" class="size-5" />
-            {{ nav.name }}
+            <component :is="nav.icon" :size="22" />
+            <p class="text-base">{{ nav.name }}</p>
           </RouterLink>
         </template>
       </nav>

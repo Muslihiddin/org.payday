@@ -1,3 +1,3 @@
-import PaymentsList from './ui/index.vue'
+import PaymentsList from "./ui/PaymentsList.vue";
 
-export default PaymentsList
+export default PaymentsList;

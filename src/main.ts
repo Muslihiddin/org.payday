@@ -1,16 +1,10 @@
-import './assets/main.css'
+import { createApp } from "vue";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { VueQueryPlugin } from '@tanstack/vue-query'
+import { VueQueryPlugin } from "@tanstack/vue-query";
+import router from "@/router";
 
-import App from './App.vue'
-import router from './router'
+import "./assets/index.css";
 
-const app = createApp(App)
+import App from "./App.vue";
 
-app.use(createPinia())
-app.use(router)
-app.use(VueQueryPlugin)
-
-app.mount('#app')
+createApp(App).use(router).use(VueQueryPlugin).mount("#app");

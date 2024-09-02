@@ -1,61 +1,49 @@
-import Dashboard from '../views/Dashboard.vue'
-
 export const routes = [
   {
-    path: '/auth',
-    name: 'auth',
-    redirect: { name: 'login' },
-    component: () => import('@/layouts/AuthLayout.vue'),
+    path: "/auth",
+    name: "auth",
+    redirect: { name: "login" },
+    component: () => import("@/layouts/AuthLayout.vue"),
     children: [
       {
-        path: 'login',
-        name: 'login',
-        component: () => import('@/views/auth/login/index.vue')
+        path: "login",
+        name: "login",
+        component: () => import("@/views/auth/login"),
       },
       {
-        path: '/otp-confirmation/:id',
-        name: 'auth-otp-confirmation',
-        component: () => import('@/views/auth/OtpView.vue')
+        path: "registration",
+        name: "registration",
+        component: () => import("@/views/auth/registration"),
       },
-      {
-        path: '/register',
-        name: 'register',
-        component: () => import('@/views/auth/register/index.vue')
-      }
-    ]
+    ],
   },
-
   {
-    path: '',
-    name: 'main',
-    redirect: { name: 'home' },
-    component: () => import('@/layouts/DefaultLayout.vue'),
+    path: "",
+    name: "main",
+    redirect: { name: "home" },
+    component: () => import("@/layouts/DefaultLayout.vue"),
     children: [
       {
-        path: '/',
-        name: 'home',
-        component: Dashboard
+        path: "/",
+        name: "home",
+        component: () => import("@/views/dashboard"),
       },
       {
-        path: '/about',
-        name: 'about',
-        component: () => import('@/views/AboutView.vue')
+        path: "/employees",
+        name: "employees-list",
+        component: () => import("@/views/employees/list"),
       },
       {
-        path: '/employees',
-        name: 'employees-list',
-        component: () => import('@/views/employees/list')
+        path: "/employee/create",
+        name: "employees-create",
+        component: () => import("@/views/employees/create"),
       },
+
       {
-        path: '/employees/create',
-        name: 'employees-create',
-        component: () => import('@/views/employees/create')
+        path: "/payments",
+        name: "payments-list",
+        component: () => import("@/views/payments/list"),
       },
-      {
-        path: '/payments',
-        name: 'payments',
-        component: () => import('@/views/payments/list')
-      }
-    ]
-  }
-]
+    ],
+  },
+];

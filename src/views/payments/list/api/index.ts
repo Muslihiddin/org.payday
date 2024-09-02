@@ -1,18 +1,27 @@
-import api from '@/api'
+import api from "@/api";
+
+import type { AxiosResponse } from "axios";
 import type {
   FetchPaymentsParams,
   PayloadPayments,
   Payments,
-  PaymentsModelIEnumerableResult
-} from '../types'
-const url = 'api/salary-payments'
+  PaymentsModelIEnumerableResult,
+} from "../types";
 
-export const fetchPayments = async (params: FetchPaymentsParams) => {
-  const { data } = await api<PaymentsModelIEnumerableResult>(url, { params })
-  return data.data
-}
+const url = "api/salary-payments";
 
-export const CreatePayments = async (payload: PayloadPayments) => {
-  const { data } = await api.post<Payments>(url, payload)
-  return data
-}
+export const fetchPayments = async (
+  params: FetchPaymentsParams
+): Promise<PaymentsModelIEnumerableResult> => {
+  const response: AxiosResponse<PaymentsModelIEnumerableResult> = await api.get(
+    "/api/salary-payments",
+    { params }
+  );
+  return response.data;
+};
+
+export const createPayments = async (
+  payload: PayloadPayments
+): Promise<AxiosResponse<Payments>> => {
+  return await api.post<Payments>(url, payload);
+};
