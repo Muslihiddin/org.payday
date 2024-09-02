@@ -14,7 +14,7 @@ export const fetchPayments = async (
   params: FetchPaymentsParams
 ): Promise<PaymentsModelIEnumerableResult> => {
   const response: AxiosResponse<PaymentsModelIEnumerableResult> = await api.get(
-    "/api/salary-payments",
+    url,
     { params }
   );
   return response.data;
