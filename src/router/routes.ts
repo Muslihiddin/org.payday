@@ -44,6 +44,12 @@ export const routes = [
         name: "payments-list",
         component: () => import("@/views/payments/list"),
       },
+
+      {
+        path: "/attendances",
+        name: "attendances-list",
+        component: () => import("@/views/attendances/list"),
+      },
     ],
   },
 ];

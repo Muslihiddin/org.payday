@@ -2,7 +2,12 @@
 import { ref } from "vue";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
-import { LayoutDashboardIcon, Users2Icon, CoinsIcon } from "lucide-vue-next";
+import {
+  LayoutDashboardIcon,
+  Users2Icon,
+  CoinsIcon,
+  CalendarDaysIcon,
+} from "lucide-vue-next";
 
 import type { LinkProp } from "@/components/sidebar";
 
@@ -21,6 +26,11 @@ const links: LinkProp[] = [
     name: "Payments",
     location: "payments-list",
     icon: CoinsIcon,
+  },
+  {
+    name: "Attendances",
+    location: "attendances-list",
+    icon: CalendarDaysIcon,
   },
 ];
 
