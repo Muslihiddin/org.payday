@@ -1,32 +1,29 @@
 <script setup lang="ts">
-import { cn } from "@/lib/utils";
-import { useRoute } from "vue-router";
-import { ChevronLeftIcon } from "@radix-icons/vue";
+import { cn } from '@/lib/utils'
+import { useRoute } from 'vue-router'
+import { ChevronLeftIcon } from '@radix-icons/vue'
 
-import { buttonVariants, Button } from "@/components/ui/button";
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { links } from './links'
 
-import type { NavProps } from "..";
+import { buttonVariants, Button } from '@/components/ui/button'
+import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
-defineProps<NavProps>();
-const emit = defineEmits(["on-toggle-sidebar"]);
-const toggleSidebar = () => emit("on-toggle-sidebar");
+import type { NavProps } from '..'
 
-const route = useRoute();
+defineProps<NavProps>()
+const emit = defineEmits(['on-toggle-sidebar'])
+const toggleSidebar = () => emit('on-toggle-sidebar')
+
+const route = useRoute()
 const isActive = (location: string) => {
-  return route.name === location;
-};
+  return route.name === location
+}
 </script>
 
 <template>
   <aside
     :data-collapsed="isCollapsed"
-    class="group min-h-screen px-4 py-6 pt-3 border-r flex flex-col fixed"
+    class="group min-h-screen px-4 py-6 pt-3 border-r flex flex-col fixed bg-white"
   >
     <div v-if="isCollapsed" class="flex justify-center mb-6">
       <img src="/logo.svg" alt="payday" class="w-8" />
@@ -36,19 +33,15 @@ const isActive = (location: string) => {
     </div>
 
     <TooltipProvider>
-      <nav
-        class="flex flex-col h-full gap-y-1 duration-200 transition-all flex-1"
-      >
+      <nav class="flex flex-col h-full gap-y-1 duration-200 transition-all flex-1">
         <template v-for="nav in links" :key="nav.name">
           <Tooltip v-if="isCollapsed" :delay-duration="0">
             <TooltipTrigger as-child>
               <RouterLink
                 :to="{ name: nav.location }"
                 :class="{
-                  [cn(buttonVariants({ variant: 'ghost', size: 'icon' }))]:
-                    !isActive(nav.location),
-                  [cn(buttonVariants({ variant: 'default', size: 'icon' }))]:
-                    isActive(nav.location),
+                  [cn(buttonVariants({ variant: 'ghost', size: 'icon' }))]: !isActive(nav.location),
+                  [cn(buttonVariants({ variant: 'default', size: 'icon' }))]: isActive(nav.location)
                 }"
               >
                 <component :is="nav.icon" :size="22" />
@@ -65,10 +58,8 @@ const isActive = (location: string) => {
             :to="{ name: nav.location }"
             class="gap-x-3 min-w-48"
             :class="{
-              [cn(buttonVariants({ variant: 'ghost' }), 'justify-start')]:
-                !isActive(nav.location),
-              [cn(buttonVariants({ variant: 'default' }), 'justify-start')]:
-                isActive(nav.location),
+              [cn(buttonVariants({ variant: 'ghost' }), 'justify-start')]: !isActive(nav.location),
+              [cn(buttonVariants({ variant: 'default' }), 'justify-start')]: isActive(nav.location)
             }"
           >
             <component :is="nav.icon" :size="22" />

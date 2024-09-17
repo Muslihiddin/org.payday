@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/vue-query";
 import { useRouter } from "vue-router";
 
 import { fetchEmployees } from "../api";
-import { columns, DataTable } from "../modules";
+import { columns, DataTable, UploadEmployeesDialog } from "../modules";
 
 import { Button } from "@/components/ui/button";
 
@@ -54,12 +54,16 @@ const handlePaginationUpdate = (val: FetchEmployeesParams) => {
     >
       Employees
     </h2>
-    <Button
-      variant="outline"
-      @click="router.push({ name: 'employees-create' })"
-    >
-      New employee
-    </Button>
+    <div class="flex items-center">
+      <UploadEmployeesDialog />
+
+      <Button
+        variant="outline"
+        @click="router.push({ name: 'employees-create' })"
+      >
+        New employee
+      </Button>
+    </div>
   </header>
 
   <DataTable
