@@ -6,6 +6,7 @@ import {
   LayoutDashboardIcon,
   Users2Icon,
   CoinsIcon,
+  CalendarDaysIcon,
   HandCoinsIcon,
 } from "lucide-vue-next";
 
@@ -28,6 +29,11 @@ const links: LinkProp[] = [
     icon: CoinsIcon,
   },
   {
+    name: "Attendances",
+    location: "attendances-list",
+    icon: CalendarDaysIcon,
+    },
+    {
     name: "Requests",
     location: "requests-list",
     icon: HandCoinsIcon,

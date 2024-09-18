@@ -44,6 +44,11 @@ export const routes = [
         component: () => import("@/views/payments/list"),
       },
       {
+        path: "/attendances",
+        name: "attendances-list",
+        component: () => import("@/views/attendances/list"),
+      },
+      {
         path: "/requests",
         name: "requests-list",
         component: () => import("@/views/requests/list"),
