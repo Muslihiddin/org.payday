@@ -39,9 +39,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ServerError from "@/components/error/ServerError.vue";
 
 const params: FetchPaymentsParams = { page: 1, size: 10 };
-const { data, error, isLoading, isError } = useGetPayments(params);
+const { data, isLoading, isError } = useGetPayments(params);
 
 const { data: employees } = useQuery({
   queryKey: ["employees"],
@@ -75,6 +76,12 @@ const tryCreate = handleSubmit((values: PayloadPayments) => {
 });
 
 const isDialogOpen = ref(false);
+
+// watch(isError, (newValue) => {
+//   if (newValue) {
+//     router.push("/500");
+//   }
+// });
 </script>
 
 <template>
@@ -105,7 +112,7 @@ const isDialogOpen = ref(false);
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem
-                          v-for="item in employees.data.data"
+                          v-for="item in employees!.data.data"
                           :key="item.id"
                           :value="item.id"
                         >
@@ -143,7 +150,7 @@ const isDialogOpen = ref(false);
       </Dialog>
     </header>
     <template v-if="isError">
-      {{ error?.status }}
+      <ServerError />
     </template>
     <template v-else>
       <div class="mt-6 w-full">

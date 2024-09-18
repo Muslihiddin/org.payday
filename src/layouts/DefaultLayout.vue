@@ -7,6 +7,7 @@ import {
   Users2Icon,
   CoinsIcon,
   CalendarDaysIcon,
+  HandCoinsIcon,
 } from "lucide-vue-next";
 
 import type { LinkProp } from "@/components/sidebar";
@@ -31,6 +32,11 @@ const links: LinkProp[] = [
     name: "Attendances",
     location: "attendances-list",
     icon: CalendarDaysIcon,
+    },
+    {
+    name: "Requests",
+    location: "requests-list",
+    icon: HandCoinsIcon,
   },
 ];
 
