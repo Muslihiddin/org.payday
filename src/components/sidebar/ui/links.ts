@@ -1,4 +1,10 @@
-import { LayoutDashboardIcon, Users2Icon, CoinsIcon, HandCoinsIcon } from 'lucide-vue-next'
+import {
+  LayoutDashboardIcon,
+  Users2Icon,
+  CoinsIcon,
+  HandCoinsIcon,
+  UserCheck2Icon
+} from 'lucide-vue-next'
 
 import type { LinkProp } from '..'
 
@@ -22,5 +28,10 @@ export const links: LinkProp[] = [
     name: 'Requests',
     location: 'requests-list',
     icon: HandCoinsIcon
+  },
+  {
+    name: 'Attendances',
+    location: 'attendances-list',
+    icon: UserCheck2Icon
   }
 ]

@@ -52,6 +52,11 @@ export const routes = [
         path: '/requests',
         name: 'requests-list',
         component: () => import('@/views/requests/list')
+      },
+      {
+        path: '/attendances',
+        name: 'attendances-list',
+        component: () => import('@/views/attendances/list')
       }
     ]
   }
