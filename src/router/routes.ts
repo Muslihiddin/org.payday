@@ -44,20 +44,14 @@ export const routes = [
         component: () => import('@/views/employees/upload-list')
       },
       {
-<<<<<<< HEAD
         path: '/payments',
         name: 'payments-list',
         component: () => import('@/views/payments/list')
-=======
-        path: "/attendances",
-        name: "attendances-list",
-        component: () => import("@/views/attendances/list"),
       },
       {
-        path: "/requests",
-        name: "requests-list",
-        component: () => import("@/views/requests/list"),
->>>>>>> 1c9b1c0124247d59458676aef6c3fdb612d21912
+        path: '/attendances',
+        name: 'attendances-list',
+        component: () => import('@/views/attendances/list')
       },
       {
         path: '/requests',
