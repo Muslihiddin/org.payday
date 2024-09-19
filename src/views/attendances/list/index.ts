@@ -1,3 +1,3 @@
-import AttendancesList from "./ui/attendancesList.vue";
+import AttendancesList from './ui/AttendancesList.vue'
 
-export default AttendancesList;
+export default AttendancesList

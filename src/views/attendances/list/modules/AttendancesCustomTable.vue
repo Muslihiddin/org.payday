@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="TData, TValue">
 import type { ColumnDef } from '@tanstack/vue-table'
 
+import { Button } from '@/components/ui/button'
 import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
 import {
   Table,
@@ -17,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
 
 import {
   ChevronRightIcon,
@@ -55,7 +55,13 @@ const table = useVueTable({
     return props.columns
   },
   getCoreRowModel: getCoreRowModel(),
-  manualPagination: true
+  manualPagination: true,
+  enableColumnPinning: true,
+  state: {
+    columnPinning: {
+      left: ['fio']
+    }
+  }
 })
 </script>
 
@@ -64,7 +70,7 @@ const table = useVueTable({
     <Table class="w-full">
       <TableHeader>
         <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-          <TableHead v-for="header in headerGroup.headers" :key="header.id">
+          <TableHead v-for="header in headerGroup.headers" :key="header.id" class="border-r">
             <FlexRender
               v-if="!header.isPlaceholder"
               :render="header.column.columnDef.header"
@@ -85,7 +91,7 @@ const table = useVueTable({
             :key="row.id"
             :data-state="row.getIsSelected() ? 'selected' : undefined"
           >
-            <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
+            <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id" class="border-r">
               <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
             </TableCell>
           </TableRow>
