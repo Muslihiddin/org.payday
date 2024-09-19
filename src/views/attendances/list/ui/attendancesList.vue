@@ -1,12 +1,49 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useGetAttendances } from '../query/useGetAttendances'
+import type { AttendancesFetchParams, AttendanceTableData } from '../types'
+import type { ColumnDef } from '@tanstack/vue-table'
 
-const res = useGetAttendances({ page: 1, size: 20 })
-const awd = computed(() => {
-  console.log(res.data.value?.data)
-  return 'awd'
+import { computed, ref, watch } from 'vue'
+
+import { useGetAttendances } from '../query/useGetAttendances'
+import { AttendancesCustomTable, prepareTableData, prepareColumns, uniqueDates } from '../modules'
+
+const params = ref<AttendancesFetchParams>({ page: 1, size: 20 })
+const { data, isLoading } = useGetAttendances(params.value)
+const tableData = ref<AttendanceTableData[]>([])
+const columns = ref<ColumnDef<AttendanceTableData>[]>([])
+
+watch(data, (newValue) => {
+  if (newValue) {
+    tableData.value = prepareTableData(newValue.data)
+    columns.value = prepareColumns(uniqueDates)
+  }
 })
+
+const tablePagination = computed(() => {
+  if (data.value) {
+    const xPag = JSON.parse(data.value.headers['x-pagination'])
+    return {
+      currentPage: xPag.CurrentPage,
+      totalCount: xPag.TotalCount,
+      totalPages: xPag.TotalPages,
+      pageSize: xPag.PageSize,
+      canPrevPage: xPag.HasPrevious,
+      canNextPage: xPag.HasNext
+    }
+  } else {
+    return {
+      currentPage: 0,
+      totalCount: 0,
+      totalPages: 0,
+      pageSize: 0,
+      canPrevPage: 0,
+      canNextPage: 0
+    }
+  }
+})
+const handlePaginationUpdate = (val: AttendancesFetchParams) => {
+  params.value = val
+}
 </script>
 
 <template>
@@ -16,9 +53,14 @@ const awd = computed(() => {
     >
       Attendances
     </h2>
+    <div class="flex items-center"></div>
   </header>
 
-  {{ awd }}
+  <AttendancesCustomTable
+    :data="tableData"
+    :columns="columns"
+    :loading="isLoading"
+    :pagination="tablePagination"
+    @update:pagination="handlePaginationUpdate"
+  />
 </template>
-
-<style scoped></style>
