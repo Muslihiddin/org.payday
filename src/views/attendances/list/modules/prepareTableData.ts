@@ -4,6 +4,10 @@ import { useDateFormat } from '@vueuse/core'
 
 export let uniqueDates: Set<string> = new Set()
 
+const sortByDesc = (arr: string[]) => {
+  return arr.sort((a, b) => (a > b ? -1 : 1))
+}
+
 export const prepareTableData = (data: AttendanceFetchResponse[]) => {
   data.forEach((item) => {
     if (item.attendances.length) {
@@ -14,6 +18,8 @@ export const prepareTableData = (data: AttendanceFetchResponse[]) => {
       })
     }
   })
+
+  uniqueDates = new Set(sortByDesc(Array.from(uniqueDates)))
 
   let result: AttendanceTableData[] = []
 

@@ -77,7 +77,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     }
   } catch (err) {
     if (axios.isAxiosError(err)) {
-      if (err.status && err.status > 499) {
+      if ((err.status && err.status > 499) || (err.status && err.status === 405)) {
         toast.error('Error occurred on the server, please retry later')
       } else {
         toast.error(err.response ? err.response.data.error.message : 'An unexpected error occurred')

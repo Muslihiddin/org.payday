@@ -5,10 +5,17 @@ import type { ColumnDef } from '@tanstack/vue-table'
 import { computed, ref, watch } from 'vue'
 
 import { useGetAttendances } from '../query/useGetAttendances'
-import { AttendancesCustomTable, prepareTableData, prepareColumns, uniqueDates } from '../modules'
+import {
+  AttendancesCustomTable,
+  RangeDatePicker,
+  prepareTableData,
+  prepareColumns,
+  uniqueDates
+} from '../modules'
 
 const params = ref<AttendancesFetchParams>({ page: 1, size: 20 })
 const { data, isLoading } = useGetAttendances(params.value)
+
 const tableData = ref<AttendanceTableData[]>([])
 const columns = ref<ColumnDef<AttendanceTableData>[]>([])
 
@@ -55,6 +62,10 @@ const handlePaginationUpdate = (val: AttendancesFetchParams) => {
     </h2>
     <div class="flex items-center"></div>
   </header>
+
+  <div class="mb-3">
+    <RangeDatePicker />
+  </div>
 
   <AttendancesCustomTable
     :data="tableData"

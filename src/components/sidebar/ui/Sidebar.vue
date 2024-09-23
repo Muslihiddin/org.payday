@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cn } from '@/lib/utils'
 import { useRoute } from 'vue-router'
-import { ChevronLeftIcon } from '@radix-icons/vue'
+import { ChevronLeftIcon } from 'lucide-vue-next'
 
 import { links } from './links'
 
@@ -71,7 +71,7 @@ const isActive = (location: string) => {
       <Tooltip>
         <TooltipTrigger as-child>
           <Button variant="outline" size="icon" @click="toggleSidebar">
-            <ChevronLeftIcon :class="{ 'rotate-180': isCollapsed }" />
+            <ChevronLeftIcon :size="16" :class="{ 'rotate-180': isCollapsed }" />
           </Button>
         </TooltipTrigger>
         <TooltipContent side="right">
