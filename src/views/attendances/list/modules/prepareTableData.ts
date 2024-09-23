@@ -9,6 +9,8 @@ const sortByDesc = (arr: string[]) => {
 }
 
 export const prepareTableData = (data: AttendanceFetchResponse[]) => {
+  uniqueDates.clear()
+
   data.forEach((item) => {
     if (item.attendances.length) {
       item.attendances.forEach((el) => {

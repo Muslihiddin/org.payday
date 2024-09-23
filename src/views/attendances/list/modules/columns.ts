@@ -10,9 +10,14 @@ export const prepareColumns = (dates: Set<string>): ColumnDef<AttendanceTableDat
       id: 'fio',
       header: () => h('p', {}, 'F.I.O'),
       cell: ({ row }: { row: Row<AttendanceTableData> }) => {
-        if (row.original.fio) return h('p', { class: 'font-medium text-nowrap' }, row.original.fio)
+        if (row.original.fio)
+          return h('p', { class: 'font-medium text-nowrap sticky right-0' }, row.original.fio)
 
-        return h('p', { class: 'italic text-muted-foreground text-nowrap' }, 'Not provided')
+        return h(
+          'p',
+          { class: 'italic text-muted-foreground text-nowrap sticky right-0' },
+          'Not provided'
+        )
       }
     }
   ]

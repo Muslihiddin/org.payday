@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="TData, TValue">
-import type { ColumnDef } from '@tanstack/vue-table'
+import type { ColumnDef, Column } from '@tanstack/vue-table'
 
 import { Button } from '@/components/ui/button'
 import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
@@ -63,6 +63,19 @@ const table = useVueTable({
     }
   }
 })
+
+const getCommonPinningStyles = (column: Column<TData>) => {
+  const isPinned = column.getIsPinned()
+  const isLastLeftPinnedColumn = isPinned === 'left' && column.getIsLastColumn('left')
+
+  return {
+    boxShadow: isLastLeftPinnedColumn ? '-1px 0 1px -1px gray inset' : undefined,
+    backgroundColor: isPinned === 'left' ? 'white' : undefined,
+    left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
+    position: isPinned ? 'sticky' : undefined,
+    zIndex: isPinned ? 1 : undefined
+  }
+}
 </script>
 
 <template>
@@ -70,7 +83,15 @@ const table = useVueTable({
     <Table class="w-full">
       <TableHeader>
         <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-          <TableHead v-for="header in headerGroup.headers" :key="header.id" class="border-r">
+          <TableHead
+            v-for="header in headerGroup.headers"
+            :key="header.id"
+            class="border-r"
+            :class="{
+              'pinned-left': header.column.getIsPinned() === 'left'
+            }"
+            :style="getCommonPinningStyles(header.column)"
+          >
             <FlexRender
               v-if="!header.isPlaceholder"
               :render="header.column.columnDef.header"
@@ -91,7 +112,15 @@ const table = useVueTable({
             :key="row.id"
             :data-state="row.getIsSelected() ? 'selected' : undefined"
           >
-            <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id" class="border-r">
+            <TableCell
+              v-for="cell in row.getVisibleCells()"
+              :key="cell.id"
+              class="border-r"
+              :class="{
+                'pinned-left': cell.column.getIsPinned() === 'left'
+              }"
+              :style="getCommonPinningStyles(cell.column)"
+            >
               <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
             </TableCell>
           </TableRow>

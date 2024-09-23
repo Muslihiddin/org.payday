@@ -3,6 +3,7 @@ import type { AttendancesFetchParams, AttendanceTableData } from '../types'
 import type { ColumnDef } from '@tanstack/vue-table'
 
 import { computed, ref, watch } from 'vue'
+import { CalendarDate, getLocalTimeZone, type DateValue } from '@internationalized/date'
 
 import { useGetAttendances } from '../query/useGetAttendances'
 import {
@@ -13,8 +14,25 @@ import {
   uniqueDates
 } from '../modules'
 
+const date = ref({
+  start: undefined,
+  end: undefined
+})
+watch(date, (newValue) => {
+  if (newValue.start && newValue.end) {
+    params.value = {
+      page: 1,
+      size: 20,
+      fromDate: (newValue.start as DateValue).toString(),
+      toDate: (newValue.end as DateValue).toString()
+    }
+  } else {
+    params.value = { page: 1, size: 20 }
+  }
+})
+
 const params = ref<AttendancesFetchParams>({ page: 1, size: 20 })
-const { data, isLoading } = useGetAttendances(params.value)
+const { data, isLoading } = useGetAttendances(params)
 
 const tableData = ref<AttendanceTableData[]>([])
 const columns = ref<ColumnDef<AttendanceTableData>[]>([])
@@ -64,7 +82,7 @@ const handlePaginationUpdate = (val: AttendancesFetchParams) => {
   </header>
 
   <div class="mb-3">
-    <RangeDatePicker />
+    <RangeDatePicker v-model="date" />
   </div>
 
   <AttendancesCustomTable

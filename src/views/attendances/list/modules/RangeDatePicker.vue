@@ -2,7 +2,7 @@
 import { type Ref, ref, watch } from 'vue'
 
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-vue-next'
-import { CalendarDate, type DateValue } from '@internationalized/date'
+import { today, getLocalTimeZone, type DateValue } from '@internationalized/date'
 
 import { type DateRange, RangeCalendarRoot, useDateFormatter } from 'radix-vue'
 import { type Grid, createMonth, toDate } from 'radix-vue/date'
@@ -19,22 +19,22 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
-const date = ref({
-  start: new CalendarDate(2024, 9, 19),
-  end: new CalendarDate(2024, 10, 10)
-}) as Ref<DateRange>
+const model = defineModel<DateRange>({
+  default: { start: undefined, end: undefined },
+  required: true
+})
 
 const locale = ref('en-US')
 const formatter = useDateFormatter('ru')
 
-const placeholder = ref(date.value.start) as Ref<DateValue>
+const placeholder = ref(today(getLocalTimeZone())) as Ref<DateValue>
 
 const month = ref(
   createMonth({
-    dateObj: placeholder.value,
+    weekStartsOn: 1,
     locale: locale.value,
     fixedWeeks: true,
-    weekStartsOn: 0
+    dateObj: today(getLocalTimeZone())
   })
 ) as Ref<Grid<DateValue>>
 
@@ -42,11 +42,15 @@ const updateMonth = (months: number) => {
   placeholder.value = placeholder.value.add({ months })
 }
 
+const goToToday = () => {
+  placeholder.value = today(getLocalTimeZone())
+}
+
 watch(placeholder, (_placeholder) => {
   month.value = createMonth({
     dateObj: _placeholder,
-    weekStartsOn: 0,
-    fixedWeeks: false,
+    weekStartsOn: 1,
+    fixedWeeks: true,
     locale: locale.value
   })
 })
@@ -58,20 +62,20 @@ watch(placeholder, (_placeholder) => {
       <Button
         variant="outline"
         :class="
-          cn('w-[280px] justify-start text-left font-normal', !date && 'text-muted-foreground')
+          cn('w-[280px] justify-start text-left font-normal', !model && 'text-muted-foreground')
         "
       >
         <CalendarIcon class="mr-2" :size="16" />
-        <template v-if="date.start">
-          <template v-if="date.end">
+        <template v-if="model.start">
+          <template v-if="model.end">
             {{
-              formatter.custom(toDate(date.start), {
+              formatter.custom(toDate(model.start), {
                 dateStyle: 'short'
               })
             }}
             -
             {{
-              formatter.custom(toDate(date.end), {
+              formatter.custom(toDate(model.end), {
                 dateStyle: 'short'
               })
             }}
@@ -79,7 +83,7 @@ watch(placeholder, (_placeholder) => {
 
           <template v-else>
             {{
-              formatter.custom(toDate(date.start), {
+              formatter.custom(toDate(model.start), {
                 dateStyle: 'short'
               })
             }}
@@ -91,7 +95,7 @@ watch(placeholder, (_placeholder) => {
     <PopoverContent class="w-auto p-3">
       <RangeCalendarRoot
         v-slot="{ weekDays }"
-        v-model="date"
+        v-model="model"
         v-model:placeholder="placeholder"
         :week-starts-on="1"
       >
@@ -153,12 +157,8 @@ watch(placeholder, (_placeholder) => {
         </div>
       </RangeCalendarRoot>
 
-      <div class="mt-5 flex items-center justify-between">
-        <Button size="xs" variant="outline">Today</Button>
-        <div class="flex items-center gap-x-2">
-          <Button size="xs" variant="outline">Reset</Button>
-          <Button size="xs">Apply</Button>
-        </div>
+      <div class="mt-5 flex justify-end">
+        <Button variant="outline" @click="goToToday">Today</Button>
       </div>
     </PopoverContent>
   </Popover>

@@ -1,11 +1,12 @@
+import type { AttendancesFetchParams } from '../types'
+import type { Ref } from 'vue'
+
 import { useQuery } from '@tanstack/vue-query'
 import { fetchAttendances } from '../api'
 
-import type { AttendancesFetchParams } from '../types'
-
-export const useGetAttendances = (params: AttendancesFetchParams) => {
+export const useGetAttendances = (params: Ref<AttendancesFetchParams>) => {
   return useQuery({
     queryKey: ['attendances', params],
-    queryFn: () => fetchAttendances(params)
+    queryFn: () => fetchAttendances(params.value)
   })
 }
