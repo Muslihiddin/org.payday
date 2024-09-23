@@ -9,6 +9,7 @@ import { useGetAttendances } from '../query/useGetAttendances'
 import {
   AttendancesCustomTable,
   RangeDatePicker,
+  ExcelExport,
   prepareTableData,
   prepareColumns,
   uniqueDates
@@ -81,8 +82,9 @@ const handlePaginationUpdate = (val: AttendancesFetchParams) => {
     <div class="flex items-center"></div>
   </header>
 
-  <div class="mb-3">
+  <div class="mb-2 flex items-center gap-x-2">
     <RangeDatePicker v-model="date" />
+    <ExcelExport :columns="uniqueDates" :data="tableData" />
   </div>
 
   <AttendancesCustomTable
