@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { AttendancesFetchParams, AttendanceTableData } from '../types'
 import type { ColumnDef } from '@tanstack/vue-table'
+import type { DateValue } from '@internationalized/date'
 
 import { computed, ref, watch } from 'vue'
-import { CalendarDate, getLocalTimeZone, type DateValue } from '@internationalized/date'
 
 import { useGetAttendances } from '../query/useGetAttendances'
 import {
