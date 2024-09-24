@@ -79,7 +79,7 @@ const getCommonPinningStyles = (column: Column<TData>) => {
 </script>
 
 <template>
-  <div class="border rounded overflow-x-auto">
+  <div class="border rounded overflow-auto max-h-[450px]">
     <Table class="w-full">
       <TableHeader>
         <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
