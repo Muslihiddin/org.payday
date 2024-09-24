@@ -39,6 +39,16 @@ export const routes = [
         component: () => import('@/views/employees/create')
       },
       {
+        path: '/employee/:id',
+        name: 'employees-detail',
+        component: () => import('@/views/employees/detail')
+      },
+      {
+        path: '/employee/edit/:id',
+        name: 'employees-edit',
+        component: () => import('@/views/employees/edit')
+      },
+      {
         path: '/employees/upload',
         name: 'employees-upload',
         component: () => import('@/views/employees/upload-list')
