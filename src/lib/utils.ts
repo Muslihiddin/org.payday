@@ -25,7 +25,7 @@ export const prettifyPhoneNumber = (phone: string): string => {
   return `+${countryCode} (${operatorCode}) ${part1} ${part2}${part3}`
 }
 
-export const prettify = (value: number | string) => {
+export const prettify = (value: number | string | undefined) => {
   if (!value) return value
   const regExp = /(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g
 

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGetEmployeeById } from '../query/useGetEmployeeById'
 import { useGetEmployeeSalary } from '../query/useGetEmployeeSalary'
-import { prettifyPhoneNumber } from '@/lib/utils'
+import { prettifyPhoneNumber, prettify } from '@/lib/utils'
 
 import { identifiersList } from './identifiersList'
 
 import { IdCardIcon, BanknoteIcon, MessageCircleIcon, PencilIcon } from 'lucide-vue-next'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { DeleteUserDialog } from '../modules'
+import { DeleteEmployeeDialog } from '../modules'
 
 const route = useRoute()
 const router = useRouter()
@@ -44,8 +44,6 @@ const identificationItems = computed(() => {
   }
   return temp
 })
-
-const deleteModal = ref(false)
 </script>
 
 <template>
@@ -65,13 +63,13 @@ const deleteModal = ref(false)
       </h2>
       <div class="flex items-center gap-2">
         <Button variant="outline" @click="router.push({ name: 'employees-edit', params: { id } })"
-          >Edit user <PencilIcon class="ml-2" :size="18"
+          >Edit employee <PencilIcon class="ml-2" :size="18"
         /></Button>
-        <DeleteUserDialog :id="id" />
+        <DeleteEmployeeDialog :id="id" />
       </div>
     </header>
 
-    <div class="grid lg:grid-cols-2 gap-10 max-w-[1280px]">
+    <div class="grid lg:grid-cols-2 gap-10 max-w-[1280px] pb-10">
       <div>
         <div class="flex items-center justify-between mb-5 border-b-2">
           <h3 class="text-xl font-medium">Identification details</h3>
@@ -95,7 +93,7 @@ const deleteModal = ref(false)
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Salary:</p>
-          <p class="font-semibold">{{ employee?.data.data.salary }}</p>
+          <p class="font-semibold">{{ prettify(employee?.data.data.salary) }}</p>
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Allowed amount:</p>
@@ -103,31 +101,31 @@ const deleteModal = ref(false)
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Enabled salary:</p>
-          <p class="font-semibold">{{ salary?.data.data.enableSalary }}</p>
+          <p class="font-semibold">{{ prettify(salary?.data.data.enableSalary) }}</p>
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Earned salary:</p>
-          <p class="font-semibold">{{ salary?.data.data.earnedSalary }}</p>
+          <p class="font-semibold">{{ prettify(salary?.data.data.earnedSalary) }}</p>
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Salary per day:</p>
-          <p class="font-semibold">{{ salary?.data.data.salaryPerDay }}</p>
+          <p class="font-semibold">{{ prettify(salary?.data.data.salaryPerDay) }}</p>
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Requested salary:</p>
-          <p class="font-semibold">{{ salary?.data.data.requestedSalary }}</p>
+          <p class="font-semibold">{{ prettify(salary?.data.data.requestedSalary) }}</p>
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Paid salary:</p>
-          <p class="font-semibold">{{ salary?.data.data.paidSalary }}</p>
+          <p class="font-semibold">{{ prettify(salary?.data.data.paidSalary) }}</p>
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Working days in month:</p>
-          <p class="font-semibold">{{ salary?.data.data.workingDaysInMonth }}</p>
+          <p class="font-semibold">{{ prettify(salary?.data.data.workingDaysInMonth) }}</p>
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Worked days up today:</p>
-          <p class="font-semibold">{{ salary?.data.data.workedDaysToToday }}</p>
+          <p class="font-semibold">{{ prettify(salary?.data.data.workedDaysToToday) }}</p>
         </div>
         <div class="flex items-center justify-between pb-4 gap-x-1">
           <p>Status:</p>
