@@ -1,29 +1,30 @@
 <script setup lang="ts">
 import { cn } from '@/lib/utils'
 import { useRoute } from 'vue-router'
-import { ChevronLeftIcon } from 'lucide-vue-next'
+import { SettingsIcon } from 'lucide-vue-next'
+import { useGetOrganization } from '@/views/organization-settings/query/useGetOrganization'
 
 import { links } from './links'
 
-import { buttonVariants, Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 import type { NavProps } from '..'
 
 defineProps<NavProps>()
-const emit = defineEmits(['on-toggle-sidebar'])
-const toggleSidebar = () => emit('on-toggle-sidebar')
 
 const route = useRoute()
 const isActive = (location: string) => {
   return route.name === location
 }
+
+const { data, isSuccess } = useGetOrganization()
 </script>
 
 <template>
   <aside
     :data-collapsed="isCollapsed"
-    class="group min-h-screen px-4 py-6 pt-3 border-r flex flex-col fixed bg-white"
+    class="group min-h-screen px-4 py-10 pt-3 border-r flex flex-col fixed bg-white"
   >
     <div v-if="isCollapsed" class="flex justify-center mb-6">
       <img src="/logo.svg" alt="payday" class="w-8" />
@@ -68,16 +69,38 @@ const isActive = (location: string) => {
         </template>
       </nav>
 
-      <Tooltip>
-        <TooltipTrigger as-child>
-          <Button variant="outline" size="icon" @click="toggleSidebar">
-            <ChevronLeftIcon :size="16" :class="{ 'rotate-180': isCollapsed }" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="right">
-          <p>Toggle sidebar</p>
-        </TooltipContent>
-      </Tooltip>
+      <template v-if="isSuccess">
+        <Tooltip v-if="isCollapsed">
+          <TooltipTrigger as-child>
+            <RouterLink
+              :to="{ name: 'organization-settings' }"
+              :class="{
+                [cn(buttonVariants({ variant: 'outline', size: 'icon' }))]:
+                  !isActive('organization-settings'),
+                [cn(buttonVariants({ variant: 'default', size: 'icon' }))]:
+                  isActive('organization-settings')
+              }"
+            >
+              <SettingsIcon :size="22" />
+            </RouterLink>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            <p>Open organization settings</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <RouterLink
+          v-else
+          :to="{ name: 'organization-settings' }"
+          :class="{
+            [cn(buttonVariants({ variant: 'outline' }))]: !isActive('organization-settings'),
+            [cn(buttonVariants({ variant: 'default' }))]: isActive('organization-settings')
+          }"
+        >
+          <SettingsIcon :size="22" class="mr-2" />
+          <p class="font-medium">{{ data!.data.data.name }}</p>
+        </RouterLink>
+      </template>
     </TooltipProvider>
   </aside>
 </template>

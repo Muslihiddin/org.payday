@@ -29,6 +29,11 @@ export const routes = [
         component: () => import('@/views/dashboard')
       },
       {
+        path: '/settings',
+        name: 'organization-settings',
+        component: () => import('@/views/organization-settings')
+      },
+      {
         path: '/employees',
         name: 'employees-list',
         component: () => import('@/views/employees/list')
